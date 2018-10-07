@@ -2,9 +2,8 @@
 include 'includes/connect.php';
 
 
-	if($_SESSION['admin_sid']==session_id())
-	{
-		?>
+if ($_SESSION['admin_sid'] == session_id()) {
+    ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -125,8 +124,8 @@ include 'includes/connect.php';
                     </ul>
                 </div>
                 <div class="col col s8 m8 l8">
-                    <a class="btn-flat dropdown-button waves-effect waves-light white-text profile-btn" href="#" data-activates="profile-dropdown"><?php echo $name;?> <i class="mdi-navigation-arrow-drop-down right"></i></a>
-                    <p class="user-roal"><?php echo $role;?></p>
+                    <a class="btn-flat dropdown-button waves-effect waves-light white-text profile-btn" href="#" data-activates="profile-dropdown"><?php echo $name; ?> <i class="mdi-navigation-arrow-drop-down right"></i></a>
+                    <p class="user-roal"><?php echo $role; ?></p>
                 </div>
             </div>
             </li>
@@ -140,12 +139,12 @@ include 'includes/connect.php';
 								<li><a href="all-orders.php">All Orders</a>
                                 </li>
 								<?php
-									$sql = mysqli_query($con, "SELECT DISTINCT status FROM orders;");
-									while($row = mysqli_fetch_array($sql)){
-                                    echo '<li><a href="all-orders.php?status='.$row['status'].'">'.$row['status'].'</a>
+        $sql = mysqli_query($con, "SELECT DISTINCT status FROM orders;");
+        while ($row = mysqli_fetch_array($sql)) {
+            echo '<li><a href="all-orders.php?status=' . $row['status'] . '">' . $row['status'] . '</a>
                                     </li>';
-									}
-									?>
+        }
+        ?>
                                 </ul>
                             </div>
                         </li>
@@ -223,37 +222,36 @@ include 'includes/connect.php';
 
                     <tbody>
 				<?php
-				$result = mysqli_query($con, "SELECT * FROM users");
-				while($row = mysqli_fetch_array($result))
-				{
-					echo '<tr><td>'.$row["name"].'</td>';
-					echo '<td>'.$row["email"].'</td>';
-					echo '<td>'.$row["contact"].'</td>';   
-					echo '<td>'.$row["address"].'</td>';      					
-					echo '<td><select name="'.$row['id'].'_role">
-                      <option value="Administrator"'.($row['role']=='Administrator' ? 'selected' : '').'>Administrator</option>
-                      <option value="Customer"'.($row['role']=='Customer' ? 'selected' : '').'>Customer</option>
+    $result = mysqli_query($con, "SELECT * FROM users");
+    while ($row = mysqli_fetch_array($result)) {
+        echo '<tr><td>' . $row["name"] . '</td>';
+        echo '<td>' . $row["email"] . '</td>';
+        echo '<td>' . $row["contact"] . '</td>';
+        echo '<td>' . $row["address"] . '</td>';
+        echo '<td><select name="' . $row['id'] . '_role">
+                      <option value="Administrator"' . ($row['role'] == 'Administrator' ? 'selected' : '') . '>Administrator</option>
+                      <option value="Customer"' . ($row['role'] == 'Customer' ? 'selected' : '') . '>Customer</option>
                     </select></td>';
-					echo '<td><select name="'.$row['id'].'_verified">
-                      <option value="1"'.($row['verified'] ? 'selected' : '').'>Verified</option>
-                      <option value="0"'.(!$row['verified'] ? 'selected' : '').'>Not Verified</option>
-                    </select></td>';	
-					echo '<td><select name="'.$row['id'].'_deleted">
-                      <option value="1"'.($row['deleted'] ? 'selected' : '').'>Disable</option>
-                      <option value="0"'.(!$row['deleted'] ? 'selected' : '').'>Enable</option>
+        echo '<td><select name="' . $row['id'] . '_verified">
+                      <option value="1"' . ($row['verified'] ? 'selected' : '') . '>Verified</option>
+                      <option value="0"' . (!$row['verified'] ? 'selected' : '') . '>Not Verified</option>
                     </select></td>';
-					$key = $row['id'];
-					$sql = mysqli_query($con,"SELECT * from wallet WHERE customer_id = $key;");
-					if($row1 = mysqli_fetch_array($sql)){
-						$wallet_id = $row1['id'];
-						$sql1 = mysqli_query($con,"SELECT * from wallet_details WHERE wallet_id = $wallet_id;");
-						if($row2 = mysqli_fetch_array($sql1)){
-							$balance = $row2['balance'];
-						}
-					}
-					echo '<td><label for="balance">Balance</label><input id="balance" name="'.$row['id'].'_balance" value="'.$balance.'" type="number" data-error=".errorTxt01"><div class="errorTxt01"></div></td></tr>'; 					
-				}
-				?>
+        echo '<td><select name="' . $row['id'] . '_deleted">
+                      <option value="1"' . ($row['deleted'] ? 'selected' : '') . '>Disable</option>
+                      <option value="0"' . (!$row['deleted'] ? 'selected' : '') . '>Enable</option>
+                    </select></td>';
+        $key = $row['id'];
+        $sql = mysqli_query($con, "SELECT * from wallet WHERE customer_id = $key;");
+        if ($row1 = mysqli_fetch_array($sql)) {
+            $wallet_id = $row1['id'];
+            $sql1 = mysqli_query($con, "SELECT * from wallet_details WHERE wallet_id = $wallet_id;");
+            if ($row2 = mysqli_fetch_array($sql1)) {
+                $balance = $row2['balance'];
+            }
+        }
+        echo '<td><label for="balance">Balance</label><input id="balance" name="' . $row['id'] . '_balance" value="' . $balance . '" type="number" data-error=".errorTxt01"><div class="errorTxt01"></div></td></tr>';
+    }
+    ?>
                     </tbody>
 </table>
               </div>
@@ -287,25 +285,25 @@ include 'includes/connect.php';
 
                     <tbody>
 				<?php
-					echo '<tr><td><label for="username">Username</label><input id="username" name="username" type="text" data-error=".errorTxt02"><div class="errorTxt02"></div></td>';   									
-					echo '<td><label for="password">Password</label><input id="password" name="password" type="password" data-error=".errorTxt03"><div class="errorTxt03"></div></td>';   									
-					echo '<td><label for="name">Name</label><input id="name" name="name" type="text" data-error=".errorTxt04"><div class="errorTxt04"></div></td>';
-					echo '<td><label for="email">Email</label><input id="email" name="email" type="email"></td>';
-					echo '<td><label for="contact">Phone number</label><input id="contact" name="contact" type="number" data-error=".errorTxt05"><div class="errorTxt05"></div></td>';   
-					echo '<td><label for="address">Address</label><input id="address" name="address" type="text" data-error=".errorTxt06"><div class="errorTxt06"></div></td>';   
-					echo '<td><select name="role">
+    echo '<tr><td><label for="username">Username</label><input id="username" name="username" type="text" data-error=".errorTxt02"><div class="errorTxt02"></div></td>';
+    echo '<td><label for="password">Password</label><input id="password" name="password" type="password" data-error=".errorTxt03"><div class="errorTxt03"></div></td>';
+    echo '<td><label for="name">Name</label><input id="name" name="name" type="text" data-error=".errorTxt04"><div class="errorTxt04"></div></td>';
+    echo '<td><label for="email">Email</label><input id="email" name="email" type="email"></td>';
+    echo '<td><label for="contact">Phone number</label><input id="contact" name="contact" type="number" data-error=".errorTxt05"><div class="errorTxt05"></div></td>';
+    echo '<td><label for="address">Address</label><input id="address" name="address" type="text" data-error=".errorTxt06"><div class="errorTxt06"></div></td>';
+    echo '<td><select name="role">
                       <option value="Administrator">Administrator</option>
                       <option value="Customer" selected>Customer</option>
                     </select></td>';
-					echo '<td><select name="verified">
+    echo '<td><select name="verified">
                       <option value="1">Verified</option>
                       <option value="0" selected>Not Verified</option>
-                    </select></td>';	
-					echo '<td><select name="deleted">
+                    </select></td>';
+    echo '<td><select name="deleted">
                       <option value="1">Disable</option>
                       <option value="0" selected>Enable</option>
-                    </select></td></tr>';					
-				?>
+                    </select></td></tr>';
+    ?>
                     </tbody>
 </table>
               </div>
@@ -433,15 +431,12 @@ include 'includes/connect.php';
 
 </html>
 <?php
-	}
-	else
-	{
-		if($_SESSION['customer_sid']==session_id())
-		{
-			header("location:index.php");		
-		}
-		else{
-			header("location:login.php");
-		}
-	}
+
+} else {
+    if ($_SESSION['customer_sid'] == session_id()) {
+        header("location:index.php");
+    } else {
+        header("location:login.php");
+    }
+}
 ?>

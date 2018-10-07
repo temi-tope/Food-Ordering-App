@@ -3,16 +3,15 @@
 include 'includes/connect.php';
 include 'includes/wallet.php';
 $total = 0;
-	if($_SESSION['customer_sid']==session_id())
-	{
-$result = mysqli_query($con, "SELECT * FROM users where id = $user_id");
-while($row = mysqli_fetch_array($result)){
-$name = $row['name'];	
-$address = $row['address'];
-$contact = $row['contact'];
-$verified = $row['verified'];
-}
-		?>
+if ($_SESSION['customer_sid'] == session_id()) {
+    $result = mysqli_query($con, "SELECT * FROM users where id = $user_id");
+    while ($row = mysqli_fetch_array($result)) {
+        $name = $row['name'];
+        $address = $row['address'];
+        $contact = $row['contact'];
+        $verified = $row['verified'];
+    }
+    ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -106,7 +105,7 @@ $verified = $row['verified'];
                       <li><h1 class="logo-wrapper"><a href="index.php" class="brand-logo darken-1"><img src="images/materialize-logo.png" alt="logo"></a> <span class="logo-text">Logo</span></h1></li>
                     </ul>
                     <ul class="right hide-on-med-and-down">                        
-                        <li><a href="#" class="waves-effect waves-block waves-light"><i class="mdi-editor-attach-money"><?php echo $balance;?></i></a>
+                        <li><a href="#" class="waves-effect waves-block waves-light"><i class="mdi-editor-attach-money"><?php echo $balance; ?></i></a>
                         </li>
                     </ul>						
                 </div>
@@ -138,8 +137,8 @@ $verified = $row['verified'];
                     </ul>
                 </div>
                 <div class="col col s8 m8 l8">
-                    <a class="btn-flat dropdown-button waves-effect waves-light white-text profile-btn" href="#" data-activates="profile-dropdown"><?php echo $name;?> <i class="mdi-navigation-arrow-drop-down right"></i></a>
-                    <p class="user-roal"><?php echo $role;?></p>
+                    <a class="btn-flat dropdown-button waves-effect waves-light white-text profile-btn" href="#" data-activates="profile-dropdown"><?php echo $name; ?> <i class="mdi-navigation-arrow-drop-down right"></i></a>
+                    <p class="user-roal"><?php echo $role; ?></p>
                 </div>
             </div>
             </li>
@@ -153,12 +152,12 @@ $verified = $row['verified'];
 								<li><a href="orders.php">All Orders</a>
                                 </li>
 								<?php
-									$sql = mysqli_query($con, "SELECT DISTINCT status FROM orders WHERE customer_id = $user_id;");
-									while($row = mysqli_fetch_array($sql)){
-                                    echo '<li><a href="orders.php?status='.$row['status'].'">'.$row['status'].'</a>
+        $sql = mysqli_query($con, "SELECT DISTINCT status FROM orders WHERE customer_id = $user_id;");
+        while ($row = mysqli_fetch_array($sql)) {
+            echo '<li><a href="orders.php?status=' . $row['status'] . '">' . $row['status'] . '</a>
                                     </li>';
-									}
-									?>
+        }
+        ?>
                                 </ul>
                             </div>
                         </li>
@@ -225,14 +224,14 @@ $verified = $row['verified'];
 							<label for="payment_type">Payment Type</label><br><br>
 							<select id="payment_type" name="payment_type">
 									<option value="Wallet" selected>Wallet</option>
-									<option value="Cash On Delivery" <?php if(!$verified) echo 'disabled';?>>Cash on Delivery</option>							
+									<option value="Cash On Delivery" <?php if (!$verified) echo 'disabled'; ?>>Cash on Delivery</option>							
 							</select>
                         </div>
                       </div>					
                       <div class="row">
                         <div class="input-field col s12">
                           <i class="mdi-action-home prefix"></i>
-							<textarea name="address" id="address" class="materialize-textarea validate" data-error=".errorTxt1"><?php echo $address;?></textarea>
+							<textarea name="address" id="address" class="materialize-textarea validate" data-error=".errorTxt1"><?php echo $address; ?></textarea>
 							<label for="address" class="">Address</label>
 							<div class="errorTxt1"></div>
                         </div>
@@ -264,14 +263,13 @@ $verified = $row['verified'];
                       </div>
 
 					  <?php
-					  	foreach ($_POST as $key => $value)
-						{
-							if($key == 'action' || $value == ''){
-								break;
-							}
-							echo '<input name="'.$key.'" type="hidden" value="'.$value.'">';
-						}
-					  ?>
+        foreach ($_POST as $key => $value) {
+            if ($key == 'action' || $value == '') {
+                break;
+            }
+            echo '<input name="' . $key . '" type="hidden" value="' . $value . '">';
+        }
+        ?>
                     </form>
                   </div>
                 </div>
@@ -292,43 +290,41 @@ $verified = $row['verified'];
 <div>
 <ul id="issues-collection" class="collection">
 <?php
-    echo '<li class="collection-item avatar">
+echo '<li class="collection-item avatar">
         <i class="mdi-content-content-paste red circle"></i>
-        <p><strong>Name:</strong>'.$name.'</p>
-		<p><strong>Contact Number:</strong> '.$contact.'</p>
+        <p><strong>Name:</strong>' . $name . '</p>
+		<p><strong>Contact Number:</strong> ' . $contact . '</p>
         <a href="#" class="secondary-content"><i class="mdi-action-grade"></i></a>';
-		
-	foreach ($_POST as $key => $value)
-	{
-		if($value == ''){
-			break;
-		}
-		if(is_numeric($key)){
-		$result = mysqli_query($con, "SELECT * FROM items WHERE id = $key");
-		while($row = mysqli_fetch_array($result))
-		{
-			$price = $row['price'];
-			$item_name = $row['name'];
-			$item_id = $row['id'];
-		}
-			$price = $value*$price;
-			    echo '<li class="collection-item">
+
+foreach ($_POST as $key => $value) {
+    if ($value == '') {
+        break;
+    }
+    if (is_numeric($key)) {
+        $result = mysqli_query($con, "SELECT * FROM items WHERE id = $key");
+        while ($row = mysqli_fetch_array($result)) {
+            $price = $row['price'];
+            $item_name = $row['name'];
+            $item_id = $row['id'];
+        }
+        $price = $value * $price;
+        echo '<li class="collection-item">
         <div class="row">
             <div class="col s7">
-                <p class="collections-title"><strong>#'.$item_id.' </strong>'.$item_name.'</p>
+                <p class="collections-title"><strong>#' . $item_id . ' </strong>' . $item_name . '</p>
             </div>
             <div class="col s2">
-                <span>'.$value.' Pieces</span>
+                <span>' . $value . ' Pieces</span>
             </div>
             <div class="col s3">
-                <span>#. '.$price.'</span>
+                <span>#. ' . $price . '</span>
             </div>
         </div>
     </li>';
-		$total = $total + $price;
-	}
-	}
-    echo '<li class="collection-item">
+        $total = $total + $price;
+    }
+}
+echo '<li class="collection-item">
         <div class="row">
             <div class="col s7">
                 <p class="collections-title"> Total</p>
@@ -337,12 +333,12 @@ $verified = $row['verified'];
                 <span>&nbsp;</span>
             </div>
             <div class="col s3">
-                <span><strong>#. '.$total.'</strong></span>
+                <span><strong>#. ' . $total . '</strong></span>
             </div>
         </div>
     </li>';
-		if(!empty($_POST['description']))
-		echo '<li class="collection-item avatar"><p><strong>Note: </strong>'.htmlspecialchars($_POST['description']).'</p></li>';
+if (!empty($_POST['description']))
+    echo '<li class="collection-item avatar"><p><strong>Note: </strong>' . htmlspecialchars($_POST['description']) . '</p></li>';
 ?>
 </ul>
 
@@ -462,15 +458,12 @@ $verified = $row['verified'];
 
 </html>
 <?php
-	}
-	else
-	{
-		if($_SESSION['admin_sid']==session_id())
-		{
-			header("location:admin-page.php");		
-		}
-		else{
-			header("location:login.php");
-		}
-	}
+
+} else {
+    if ($_SESSION['admin_sid'] == session_id()) {
+        header("location:admin-page.php");
+    } else {
+        header("location:login.php");
+    }
+}
 ?>

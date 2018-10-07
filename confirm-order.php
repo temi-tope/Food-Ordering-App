@@ -4,43 +4,39 @@ include 'includes/wallet.php';
 
 $continue = 0;
 $total = 0;
+if ($_SESSION['customer_sid'] == session_id()) {
+    if ($_POST['payment_type'] == 'Wallet') {
+        $_POST['cc_number'] = str_replace('-', '', $_POST['cc_number']);
+        $_POST['cc_number'] = str_replace(' ', '', $_POST['cc_number']);
+        $_POST['cvv_number'] = (int)str_replace('-', '', $_POST['cvv_number']);
+        $sql1 = mysqli_query(
+            $con,
+            "SELECT * FROM wallet_details where wallet_id = $wallet_id"
+        );
 
-if($_SESSION['customer_sid']==session_id())
-{
-		if($_POST['payment_type'] == 'Wallet')
-		{
-            $_POST['cc_number'] = str_replace('-', '', $_POST['cc_number']);
-            $_POST['cc_number'] = str_replace(' ', '', $_POST['cc_number']);
-            $_POST['cvv_number'] = (int)str_replace('-', '', $_POST['cvv_number']);
-            $sql1 = mysqli_query($con, "SELECT * FROM wallet_details where wallet_id = $wallet_id");
+        while ($row1 = mysqli_fetch_array($sql1)) {
+            $card = $row1['number'];
+            $cvv = $row1['cvv'];
 
-            while($row1 = mysqli_fetch_array($sql1))
-            {
-                $card = $row1['number'];
-                $cvv = $row1['cvv'];
-
-                if($card == $_POST['cc_number'] && $cvv==$_POST['cvv_number']){
-                    $continue = 1;
-                }
-                else
-                    header("location:index.php");
+            if ($card == $_POST['cc_number'] && $cvv == $_POST['cvv_number']) {
+                $continue = 1;
+            } else {
+                header("location:index.php");
             }
-		}
-		else
-			$continue=1;
+        }
+    } else {
+        $continue = 1;
+    }
 }
-
-var_dump($continue);
-die();
 
 $result = mysqli_query($con, "SELECT * FROM users where id = $user_id");
-while($row = mysqli_fetch_array($result)){
-	$name = $row['name'];
-	$contact = $row['contact'];
+while ($row = mysqli_fetch_array($result)) {
+    $name = $row['name'];
+    $contact = $row['contact'];
 }
 
-if($continue){
-?>
+if ($continue) {
+    ?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -81,8 +77,6 @@ if($continue){
   </div>
   <!-- End Page Loading -->
 
-  <!-- //////////////////////////////////////////////////////////////////////////// -->
-
   <!-- START HEADER -->
   <header id="header" class="page-topbar">
         <!-- start header nav-->
@@ -93,7 +87,7 @@ if($continue){
                       <li><h1 class="logo-wrapper"><a href="index.php" class="brand-logo darken-1"><img src="images/materialize-logo.png" alt="logo"></a> <span class="logo-text">Logo</span></h1></li>
                     </ul>
                     <ul class="right hide-on-med-and-down">                        
-                        <li><a href="#" class="waves-effect waves-block waves-light"><i class="mdi-editor-attach-money"><?php echo $balance;?></i></a>
+                        <li><a href="#" class="waves-effect waves-block waves-light"><i class="mdi-editor-attach-money"><?php echo $balance; ?></i></a>
                         </li>
                     </ul>					
                 </div>
@@ -102,8 +96,6 @@ if($continue){
         <!-- end header nav-->
   </header>
   <!-- END HEADER -->
-
-  <!-- //////////////////////////////////////////////////////////////////////////// -->
 
   <!-- START MAIN -->
   <div id="main">
@@ -125,8 +117,8 @@ if($continue){
                     </ul>
                 </div>
                 <div class="col col s8 m8 l8">
-                    <a class="btn-flat dropdown-button waves-effect waves-light white-text profile-btn" href="#" data-activates="profile-dropdown"><?php echo $name;?> <i class="mdi-navigation-arrow-drop-down right"></i></a>
-                    <p class="user-roal"><?php echo $role;?></p>
+                    <a class="btn-flat dropdown-button waves-effect waves-light white-text profile-btn" href="#" data-activates="profile-dropdown"><?php echo $name; ?> <i class="mdi-navigation-arrow-drop-down right"></i></a>
+                    <p class="user-roal"><?php echo $role; ?></p>
                 </div>
             </div>
             </li>
@@ -140,12 +132,12 @@ if($continue){
 								<li><a href="orders.php">All Orders</a>
                                 </li>
 								<?php
-									$sql = mysqli_query($con, "SELECT DISTINCT status FROM orders WHERE customer_id = $user_id;");
-									while($row = mysqli_fetch_array($sql)){
-                                    echo '<li><a href="orders.php?status='.$row['status'].'">'.$row['status'].'</a>
-                                    </li>';
-									}
-									?>
+        $sql = mysqli_query($con, "SELECT DISTINCT status FROM orders WHERE customer_id = $user_id;");
+        while ($row = mysqli_fetch_array($sql)) {
+            echo '<li><a href="orders.php?status=' . $row['status'] . '">' . $row['status'] . '</a>
+                                                                </li>';
+        }
+        ?>
                                 </ul>
                             </div>
                         </li>
@@ -205,42 +197,40 @@ if($continue){
 <div>
 <ul id="issues-collection" class="collection">
 <?php
-    echo '<li class="collection-item avatar">
+echo '<li class="collection-item avatar">
         <i class="mdi-content-content-paste red circle"></i>
-        <p><strong>Name:</strong>'.$name.'</p>
-		<p><strong>Contact Number:</strong> '.$contact.'</p>
-		<p><strong>Address:</strong> '.htmlspecialchars($_POST['address']).'</p>	
-		<p><strong>Payment Type:</strong> '.$_POST['payment_type'].'</p>			
+        <p><strong>Name:</strong>' . $name . '</p>
+		<p><strong>Contact Number:</strong> ' . $contact . '</p>
+		<p><strong>Address:</strong> ' . htmlspecialchars($_POST['address']) . '</p>	
+		<p><strong>Payment Type:</strong> ' . $_POST['payment_type'] . '</p>			
         <a href="#" class="secondary-content"><i class="mdi-action-grade"></i></a>';
-		
-	foreach ($_POST as $key => $value)
-	{
-		if(is_numeric($key)){		
-		$result = mysqli_query($con, "SELECT * FROM items WHERE id = $key");
-		while($row = mysqli_fetch_array($result))
-		{
-			$price = $row['price'];
-			$item_name = $row['name'];
-			$item_id = $row['id'];
-		}
-			$price = $value*$price;
-			    echo '<li class="collection-item">
+
+foreach ($_POST as $key => $value) {
+    if (is_numeric($key)) {
+        $result = mysqli_query($con, "SELECT * FROM items WHERE id = $key");
+        while ($row = mysqli_fetch_array($result)) {
+            $price = $row['price'];
+            $item_name = $row['name'];
+            $item_id = $row['id'];
+        }
+        $price = $value * $price;
+        echo '<li class="collection-item">
         <div class="row">
             <div class="col s7">
-                <p class="collections-title"><strong>#'.$item_id.' </strong>'.$item_name.'</p>
+                <p class="collections-title"><strong>#' . $item_id . ' </strong>' . $item_name . '</p>
             </div>
             <div class="col s2">
-                <span>'.$value.' Pieces</span>
+                <span>' . $value . ' Pieces</span>
             </div>
             <div class="col s3">
-                <span>Rs. '.$price.'</span>
+                <span>Rs. ' . $price . '</span>
             </div>
         </div>
     </li>';
-		$total = $total + $price;
-	}
-	}
-    echo '<li class="collection-item">
+        $total = $total + $price;
+    }
+}
+echo '<li class="collection-item">
         <div class="row">
             <div class="col s7">
                 <p class="collections-title"> Total</p>
@@ -249,21 +239,21 @@ if($continue){
                 <span>&nbsp;</span>
             </div>
             <div class="col s3">
-                <span><strong>Rs. '.$total.'</strong></span>
+                <span><strong>Rs. ' . $total . '</strong></span>
             </div>
         </div>
     </li>';
-	if(!empty($_POST['description']))
-		echo '<li class="collection-item avatar"><p><strong>Note: </strong>'.htmlspecialchars($_POST['description']).'</p></li>';
-	if($_POST['payment_type'] == 'Wallet')
-	echo '<div id="basic-collections" class="section">
+if (!empty($_POST['description']))
+    echo '<li class="collection-item avatar"><p><strong>Note: </strong>' . htmlspecialchars($_POST['description']) . '</p></li>';
+if ($_POST['payment_type'] == 'Wallet')
+    echo '<div id="basic-collections" class="section">
 		<div class="row">
 			<div class="collection">
 				<a href="#" class="collection-item">
-					<div class="row"><div class="col s7">Current Balance</div><div class="col s3">'.$balance.'</div></div>
+					<div class="row"><div class="col s7">Current Balance</div><div class="col s3">' . $balance . '</div></div>
 				</a>
 				<a href="#" class="collection-item active">
-					<div class="row"><div class="col s7">Balance after purchase</div><div class="col s3">'.($balance-$total).'</div></div>
+					<div class="row"><div class="col s7">Balance after purchase</div><div class="col s3">' . ($balance - $total) . '</div></div>
 				</a>
 			</div>
 		</div>
@@ -271,20 +261,25 @@ if($continue){
 ?>
 <form action="routers/order-router.php" method="post">
 <?php
-foreach ($_POST as $key => $value)
-{
-	if(is_numeric($key)){
-		echo '<input type="hidden" name="'.$key.'" value="'.$value.'">';
-	}
+foreach ($_POST as $key => $value) {
+    if (is_numeric($key)) {
+        echo '<input type="hidden" name="' . $key . '" value="' . $value . '">';
+    }
 }
 ?>
-<input type="hidden" name="payment_type" value="<?php echo $_POST['payment_type'];?>">
-<input type="hidden" name="address" value="<?php echo htmlspecialchars($_POST['address']);?>">
-<?php if (isset($_POST['description'])) { echo'<input type="hidden" name="description" value="'.htmlspecialchars($_POST['description']).'">';}?>
-<?php if($_POST['payment_type'] == 'Wallet') echo '<input type="hidden" name="balance" value="<?php echo ($balance-$total);?>">'; ?>
-<input type="hidden" name="total" value="<?php echo $total;?>">
+<input type="hidden" name="payment_type" value="<?php echo $_POST['payment_type']; ?>">
+<input type="hidden" name="address" value="<?php echo htmlspecialchars($_POST['address']); ?>">
+<?php if (isset($_POST['description'])) {
+    echo '<input type="hidden" name="description" value="' . htmlspecialchars($_POST['description']) . '">';
+} ?>
+<?php if ($_POST['payment_type'] == 'Wallet') echo '<input type="hidden" name="balance" value="<?php echo ($balance-$total);?>">'; ?>
+<input type="hidden" name="total" value="<?php echo $total; ?>">
 <div class="input-field col s12">
-<button class="btn cyan waves-effect waves-light right" type="submit" name="action" <?php if($_POST['payment_type'] == 'Wallet') {if ($balance-$total < 0) {echo 'disabled'; }}?>>Confirm Order
+<button class="btn cyan waves-effect waves-light right" type="submit" name="action" <?php if ($_POST['payment_type'] == 'Wallet') {
+                                                                                        if ($balance - $total < 0) {
+                                                                                            echo 'disabled';
+                                                                                        }
+                                                                                    } ?>>Confirm Order
 <i class="mdi-content-send right"></i>
 </button>
 </div>
@@ -345,15 +340,12 @@ foreach ($_POST as $key => $value)
 
 </html>
 <?php
-	}
-	else
-	{
-		if($_SESSION['admin_sid']==session_id())
-		{
-			header("location:admin-page.php");		
-		}
-		else{
-			header("location:login.php");
-		}
-	}
+
+} else {
+    if ($_SESSION['admin_sid'] == session_id()) {
+        header("location:admin-page.php");
+    } else {
+        header("location:login.php");
+    }
+}
 ?>
